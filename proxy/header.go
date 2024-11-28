@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"log"
@@ -7,11 +7,10 @@ import (
 	"strings"
 
 	"github.com/boynux/squid-exporter/config"
-
 	proxyproto "github.com/pires/go-proxyproto"
 )
 
-func createProxyHeader(cfg *config.Config) string {
+func CreateProxyHeader(cfg *config.Config) string {
 	la := strings.Split(cfg.ListenAddress, ":")
 	if len(la) < 2 {
 		log.Printf("Cannot parse listen address (%s). Failed to create proxy header\n", cfg.ListenAddress)
@@ -44,7 +43,6 @@ func createProxyHeader(cfg *config.Config) string {
 			IP:   sip[0],
 			Port: spt,
 		},
-
 		DestinationAddr: &net.TCPAddr{
 			IP:   dip[0],
 			Port: cfg.SquidPort,
@@ -56,7 +54,5 @@ func createProxyHeader(cfg *config.Config) string {
 		log.Printf("Failed to create proxy header: %v\n", err.Error())
 	}
 
-	// proxyproto adds crlf to the end of the header string, but we will add this later
-	// we are triming it here.
 	return strings.TrimSuffix(string(phs), "\r\n")
 }

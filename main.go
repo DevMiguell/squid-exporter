@@ -10,6 +10,7 @@ import (
 
 	"github.com/boynux/squid-exporter/collector"
 	"github.com/boynux/squid-exporter/config"
+	"github.com/boynux/squid-exporter/proxy"
 	kitlog "github.com/go-kit/log"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
@@ -31,10 +32,13 @@ func main() {
 	}
 	collector.ExtractServiceTimes = cfg.ExtractServiceTimes
 
+	memCollector := collector.NewMemPoolCollector(cfg.SquidHostname, cfg.SquidPort)
+	prometheus.MustRegister(memCollector)
+
 	headers := []string{}
 
 	if cfg.UseProxyHeader {
-		headers = append(headers, createProxyHeader(cfg))
+		headers = append(headers, proxy.CreateProxyHeader(cfg))
 	}
 
 	log.Println("Scraping metrics from", fmt.Sprintf("%s:%d", cfg.SquidHostname, cfg.SquidPort))

@@ -1,4 +1,4 @@
-package main
+package proxy
 
 import (
 	"testing"
@@ -17,6 +17,6 @@ func TestCreatProxyHelper(t *testing.T) {
 
 	expectedHProxyString := "PROXY TCP4 192.0.2.1 127.0.0.1 3192 3128"
 
-	p := createProxyHeader(cfg)
+	p := CreateProxyHeader(cfg)
 	assert.Equal(t, expectedHProxyString, p, "Proxy headers do not match!")
 }
